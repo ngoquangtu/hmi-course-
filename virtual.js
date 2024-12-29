@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const ramPricePerGB = 5; // Cost per GB of RAM
     const storagePricePerGB = 0.5; // Cost per GB of storage
-    let vms = []; // List to store created VMs
+    let vms = JSON.parse(localStorage.getItem("vms")) || []; // Load VMs from localStorage
+
+    renderVMTable();
 
     nextStepButton.addEventListener("click", () => {
         if (currentStep === 1) {
@@ -67,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         vms.push(newVm);
+        saveToLocalStorage();
         renderVMTable();
 
         // Close modal and reset form
@@ -116,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const vm = vms.find((v) => v.id === id);
                 if (vm) {
                     vm.status = "Running";
+                    saveToLocalStorage();
                     renderVMTable();
                 }
             });
@@ -125,8 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
             button.addEventListener("click", (event) => {
                 const id = parseInt(event.target.getAttribute("data-id"));
                 vms = vms.filter((v) => v.id !== id);
+                saveToLocalStorage();
                 renderVMTable();
             });
         });
+    }
+
+    function saveToLocalStorage() {
+        localStorage.setItem("vms", JSON.stringify(vms));
     }
 });
