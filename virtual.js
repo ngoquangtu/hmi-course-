@@ -105,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${vm.status}</td>
                 <td>
                     <button class="btn btn-success btn-sm start-vm" data-id="${vm.id}">Start</button>
+                    <button class="btn btn-warning btn-sm stop-vm" data-id="${vm.id}" ${vm.status === "Stopped" ? "disabled" : ""}>Stop</button>
                     <button class="btn btn-danger btn-sm delete-vm" data-id="${vm.id}">Delete</button>
                 </td>
             `;
@@ -112,13 +113,25 @@ document.addEventListener("DOMContentLoaded", () => {
             vmTableBody.appendChild(row);
         });
 
-        // Add event listeners for Start and Delete buttons
+        // Add event listeners for Start, Stop, and Delete buttons
         document.querySelectorAll(".start-vm").forEach((button) => {
             button.addEventListener("click", (event) => {
                 const id = parseInt(event.target.getAttribute("data-id"));
                 const vm = vms.find((v) => v.id === id);
                 if (vm) {
                     vm.status = "Running";
+                    saveToLocalStorage();
+                    renderVMTable();
+                }
+            });
+        });
+
+        document.querySelectorAll(".stop-vm").forEach((button) => {
+            button.addEventListener("click", (event) => {
+                const id = parseInt(event.target.getAttribute("data-id"));
+                const vm = vms.find((v) => v.id === id);
+                if (vm) {
+                    vm.status = "Stopped";
                     saveToLocalStorage();
                     renderVMTable();
                 }
